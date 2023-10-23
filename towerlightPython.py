@@ -41,26 +41,37 @@ while True :
 
     # Check Error
     try :
-        # Request #Change 127 to IP Address of Guardhouse or SERVER
+        # Request
         target_url = "http://127.0.0.1/project-equipment/server/api.php?mode=20&a=0"
         response = urlopen(target_url)
         dataJson = json.loads(response.read())
 
         for data in dataJson["data"]["cabinet_info"] :
-            if data["dev_status"] == "0" :
-                # Set
-                isError = True
-                isFlag = True
+            # time
+            data["dev_lastupdate"] = int(data["dev_lastupdate"])
+            data["timeNow"] = int(data["timeNow"])
 
-                # Log Time
-                if smsDate == "":
-                    smsDate = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            print(str(data["timeNow"]) + " " + str(data["dev_lastupdate"]))
 
-                # Log Device
-                if not data["dev_name"] in sms :
-                    sms += "\n" + data["dev_name"]
-    except :
-        print("JSON Malfunction or Http failed.")
+            # check time
+            if (data["dev_lastupdate"] + 10) >= data["timeNow"] :
+                print(data["dev_name"] + " name")
+
+                # error
+                if data["dev_status"] == "0" :
+                    # Set
+                    isError = True
+                    isFlag = True
+
+                    # Log Time
+                    if smsDate == "":
+                        smsDate = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+                    # Log Device
+                    if not data["dev_name"] in sms :
+                        sms += "\n" + data["dev_name"]
+    except Exception as e:
+        print("JSON Malfunction or Http failed or " + e)
         sleep(1)
         continue
 
@@ -86,8 +97,8 @@ while True :
         # SMS
         if isFlag == True :
             # number
-            #smsNumber = ["+639988421016", "+639988420964", "+639988420961", "+639988420960", "+639988420977", "+639988420985", "+639988421023", "+639985894347", "+639190662468", "+639992232507", "+639088904134", "+639988420947", "+639988452593", "+639985849330", "+639985849331", "+639988420917", "+639988452590", "+639988421052", "+639209813552", "+639614335484"]
-            smsNumber = ["+639614335484"]
+            smsNumber = ["+639988421016", "+639988420964", "+639988420961", "+639988420960", "+639988420977", "+639988420985", "+639988421023", "+639985894347", "+639190662468", "+639992232507", "+639088904134", "+639988420947", "+639988452593", "+639985849330", "+639985849331", "+639988420917", "+639988452590", "+639988421052", "+639209813552", "+639614335484"]
+            #smsNumber = ["+639614335484"]
 
             for smsData in smsNumber:
                 # time

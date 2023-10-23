@@ -268,6 +268,18 @@
             echo $contentPageJS; 
         ?>
 
+<script>
+ $(document).ready(function(){
+    setInterval(function(){ reload_page(); },60*60000);
+ });
+
+ function reload_page()
+ {
+    window.location.reload(true);
+ }
+</script>
+
+
 
         <script>
             $(document).ready(function(){
@@ -277,6 +289,8 @@
                     $(this).width(each_bar_width + '%');
                 });     
             });
+
+            
 
             // Load Cabinet Info
             var flag = false;
